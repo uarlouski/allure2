@@ -3,6 +3,7 @@ package io.qameta.allure.ios;
 import io.qameta.allure.Reader;
 import io.qameta.allure.core.Configuration;
 import io.qameta.allure.core.ResultsVisitor;
+import io.qameta.allure.entity.Label;
 import io.qameta.allure.entity.StageResult;
 import io.qameta.allure.entity.Status;
 import io.qameta.allure.entity.Step;
@@ -62,26 +63,29 @@ public class IosPlugin implements Reader {
 
     private void parseSummary(final Object summary, final ResultsVisitor visitor) {
         final Map<String, Object> props = asMap(summary);
+        final String name = getTestName(props);
         final List<Object> tests = asList(props.getOrDefault(TESTS, emptyList()));
-        tests.forEach(test -> parseTestSuite(test, visitor));
+        tests.forEach(test -> parseTestSuite(name, test, visitor));
     }
 
     @SuppressWarnings("unchecked")
-    private void parseTestSuite(final Object testSuite, final ResultsVisitor visitor) {
+    private void parseTestSuite(final String parentName,
+                                final Object testSuite,
+                                final ResultsVisitor visitor) {
         Map<String, Object> props = asMap(testSuite);
         if (isTest(props)) {
-            parseTest(testSuite, visitor);
+            parseTest(parentName, testSuite, visitor);
             return;
         }
 
         final Object tests = props.get(SUB_TESTS);
         if (Objects.nonNull(tests)) {
             final List<?> subTests = List.class.cast(tests);
-            subTests.forEach(subTest -> parseTestSuite(subTest, visitor));
+            subTests.forEach(subTest -> parseTestSuite(getTestName(props), subTest, visitor));
         }
     }
 
-    private void parseTest(final Object test, final ResultsVisitor visitor) {
+    private void parseTest(final String suiteName, final Object test, final ResultsVisitor visitor) {
         Map<String, Object> props = asMap(test);
         final List<Step> steps = asList(props.getOrDefault(ACTIVITY_SUMMARIES, emptyList())).stream()
                 .map(this::parseStep)
@@ -90,6 +94,7 @@ public class IosPlugin implements Reader {
                 .withName(getTestName(props))
                 .withStatus(getTestStatus(props))
                 .withFullName(getFullName(props))
+                .withLabels(new Label().withName("suite").withValue(suiteName))
                 .withUid(UUID.randomUUID().toString());
         if (!steps.isEmpty()) {
             result.setTestStage(new StageResult().withSteps(steps));
