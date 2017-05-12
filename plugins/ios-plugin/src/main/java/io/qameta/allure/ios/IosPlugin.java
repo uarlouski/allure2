@@ -3,7 +3,9 @@ package io.qameta.allure.ios;
 import io.qameta.allure.Reader;
 import io.qameta.allure.core.Configuration;
 import io.qameta.allure.core.ResultsVisitor;
+import io.qameta.allure.entity.StageResult;
 import io.qameta.allure.entity.Status;
+import io.qameta.allure.entity.Step;
 import io.qameta.allure.entity.TestResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static java.nio.file.Files.newDirectoryStream;
 import static java.util.Collections.emptyList;
@@ -36,6 +39,9 @@ public class IosPlugin implements Reader {
     private static final String TEST_STATUS = "TestStatus";
     private static final String TEST_NAME = "TestName";
     private static final String TEST_IDENTIFIER = "TestIdentifier";
+    private static final String TITLE = "Title";
+    private static final String SUB_ACTIVITIES = "SubActivities";
+    private static final String ACTIVITY_SUMMARIES = "ActivitySummaries";
 
     @Override
     public void readResults(final Configuration configuration,
@@ -77,13 +83,30 @@ public class IosPlugin implements Reader {
 
     private void parseTest(final Object test, final ResultsVisitor visitor) {
         Map<String, Object> props = asMap(test);
-        visitor.visitTestResult(new TestResult()
+        final List<Step> steps = asList(props.getOrDefault(ACTIVITY_SUMMARIES, emptyList())).stream()
+                .map(this::parseStep)
+                .collect(Collectors.toList());
+        final TestResult result = new TestResult()
                 .withName(getTestName(props))
                 .withStatus(getTestStatus(props))
                 .withFullName(getFullName(props))
-                .withUid(UUID.randomUUID().toString())
-        );
+                .withUid(UUID.randomUUID().toString());
+        if (!steps.isEmpty()) {
+            result.setTestStage(new StageResult().withSteps(steps));
+        }
+        visitor.visitTestResult(result);
+    }
 
+    private Step parseStep(final Object step) {
+        final Map<String, Object> props = asMap(step);
+        final String stepName = (String) props.get(TITLE);
+        final List<Step> subSteps = asList(props.getOrDefault(SUB_ACTIVITIES, emptyList())).stream()
+                .map(this::parseStep)
+                .collect(Collectors.toList());
+        return new Step()
+                .withName(stepName)
+                .withStatus(Status.PASSED)
+                .withSteps(subSteps);
     }
 
     private String getTestName(final Map<String, Object> props) {
