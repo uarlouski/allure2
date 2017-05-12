@@ -1,0 +1,5 @@
+id: ios
+name: IOS Plugin
+description: The plugin that adds support for results in IOS' plist data format.
+extensions:
+  - io.qameta.allure.ios.IosPlugin
