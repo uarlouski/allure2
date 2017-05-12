@@ -78,11 +78,9 @@ public class IosPlugin implements Reader {
             return;
         }
 
-        final Object tests = props.get(SUB_TESTS);
-        if (Objects.nonNull(tests)) {
-            final List<?> subTests = List.class.cast(tests);
-            subTests.forEach(subTest -> parseTestSuite(getTestName(props), subTest, visitor));
-        }
+        final List<Object> tests = asList(props.getOrDefault(SUB_TESTS, emptyList()));
+        final String testName = getTestName(props);
+        tests.forEach(subTest -> parseTestSuite(testName, subTest, visitor));
     }
 
     private void parseTest(final String suiteName, final Object test, final ResultsVisitor visitor) {
