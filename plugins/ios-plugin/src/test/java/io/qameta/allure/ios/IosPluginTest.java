@@ -3,6 +3,7 @@ package io.qameta.allure.ios;
 import io.qameta.allure.context.JacksonContext;
 import io.qameta.allure.core.Configuration;
 import io.qameta.allure.core.ResultsVisitor;
+import io.qameta.allure.entity.TestResult;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -12,7 +13,10 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -42,5 +46,8 @@ public class IosPluginTest {
         }
 
         new IosPlugin().readResults(configuration, visitor, resultsDirectory);
+
+        verify(visitor, times(14))
+                .visitTestResult(any(TestResult.class));
     }
 }

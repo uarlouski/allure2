@@ -2,3 +2,4 @@ plugins:
   - behaviors-plugin
   - packages-plugin
   - screen-diff-plugin
+  - ios-plugin
