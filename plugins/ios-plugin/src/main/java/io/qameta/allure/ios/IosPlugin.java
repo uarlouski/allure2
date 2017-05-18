@@ -132,6 +132,11 @@ public class IosPlugin implements Reader {
 
         asList(props.getOrDefault(SUB_ACTIVITIES, emptyList()))
                 .forEach(subActivity -> parseStep(directory, testResult, step, subActivity, visitor));
+
+        step.getSteps().stream()
+                .map(Step::getStatus)
+                .filter(status -> status.equals(Status.FAILED))
+                .findFirst().ifPresent(step::setStatus);
     }
 
     @SuppressWarnings("unchecked")
