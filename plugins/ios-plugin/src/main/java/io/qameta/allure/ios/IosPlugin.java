@@ -7,9 +7,6 @@ import io.qameta.allure.entity.Status;
 import io.qameta.allure.entity.StatusDetails;
 import io.qameta.allure.entity.Step;
 import io.qameta.allure.entity.TestResult;
-import io.qameta.allure.entity.WithStatus;
-import io.qameta.allure.entity.WithStatusDetails;
-import io.qameta.allure.entity.WithSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xmlwise.Plist;
@@ -54,20 +51,22 @@ public class IosPlugin implements Reader {
     public void readResults(final Configuration configuration,
                             final ResultsVisitor visitor,
                             final Path directory) {
-        final List<Path> files = listResults(directory);
-        for (Path file : files) {
-            try {
-                LOGGER.info("Parse file {}", file);
-                final Map<String, Object> loaded = Plist.load(file.toFile());
-                final List<?> summaries = asList(loaded.getOrDefault(TESTABLE_SUMMARIES, emptyList()));
-                summaries.forEach(summary -> parseTestRun(directory, summary, visitor));
-            } catch (XmlParseException | IOException e) {
-                LOGGER.error("Could not parse file {}: {}", file, e);
-            }
+        final List<Path> testSummaries = listSummaries(directory);
+        testSummaries.forEach(summaryPath -> readSummaries(directory, summaryPath, visitor));
+    }
+
+    private void readSummaries(final Path directory, final Path testSummariesPath, final ResultsVisitor visitor) {
+        try {
+            LOGGER.info("Parse file {}", testSummariesPath);
+            final Map<String, Object> loaded = Plist.load(testSummariesPath.toFile());
+            final List<?> summaries = asList(loaded.getOrDefault(TESTABLE_SUMMARIES, emptyList()));
+            summaries.forEach(summary -> parseSummary(directory, summary, visitor));
+        } catch (XmlParseException | IOException e) {
+            LOGGER.error("Could not parse file {}: {}", testSummariesPath, e);
         }
     }
 
-    private void parseTestRun(final Path directory, final Object summary, final ResultsVisitor visitor) {
+    private void parseSummary(final Path directory, final Object summary, final ResultsVisitor visitor) {
         final Map<String, Object> props = asMap(summary);
         final List<Object> tests = asList(props.getOrDefault(TESTS, emptyList()));
         tests.forEach(test -> parseTestSuite(directory, test, visitor));
@@ -76,15 +75,14 @@ public class IosPlugin implements Reader {
     @SuppressWarnings("unchecked")
     private void parseTestSuite(final Path directory, final Object testSuite, final ResultsVisitor visitor) {
         Map<String, Object> props = asMap(testSuite);
-        if (ResultsUtils.isTest(props)) {
-            parseTest(directory, testSuite, visitor);
-            return;
-        }
-
         final Object tests = props.get(SUB_TESTS);
         if (Objects.nonNull(tests)) {
             final List<?> subTests = List.class.cast(tests);
             subTests.forEach(subTest -> parseTestSuite(directory, subTest, visitor));
+        }
+
+        if (ResultsUtils.isTest(props)) {
+            parseTest(directory, testSuite, visitor);
         }
     }
 
@@ -154,7 +152,7 @@ public class IosPlugin implements Reader {
         return Map.class.cast(object);
     }
 
-    private static List<Path> listResults(final Path directory) {
+    private static List<Path> listSummaries(final Path directory) {
         List<Path> result = new ArrayList<>();
         if (!Files.isDirectory(directory)) {
             return result;
