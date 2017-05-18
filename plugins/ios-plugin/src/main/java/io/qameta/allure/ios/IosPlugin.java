@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import static java.nio.file.Files.newDirectoryStream;
 import static java.util.Collections.emptyList;
 
 /**
@@ -158,7 +157,7 @@ public class IosPlugin implements Reader {
             return result;
         }
 
-        try (DirectoryStream<Path> directoryStream = newDirectoryStream(directory, "*.plist")) {
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(directory, "*.plist")) {
             for (Path path : directoryStream) {
                 if (!Files.isDirectory(path)) {
                     result.add(path);
