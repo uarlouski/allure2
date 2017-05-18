@@ -7,6 +7,7 @@ import io.qameta.allure.entity.Status;
 import io.qameta.allure.entity.StatusDetails;
 import io.qameta.allure.entity.Step;
 import io.qameta.allure.entity.TestResult;
+import io.qameta.allure.entity.WithTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xmlwise.Plist;
@@ -89,14 +90,14 @@ public class IosPlugin implements Reader {
         Map<String, Object> props = asMap(test);
         final TestResult result = ResultsUtils.getTestResult(props);
         asList(props.getOrDefault(ACTIVITY_SUMMARIES, emptyList()))
-                .forEach(activity -> parseStep(directory, result, result, activity, visitor));
+                .forEach(activity -> parseStep(directory, result, activity, visitor));
         Optional<Step> lastFailedStep = result.getTestStage().getSteps().stream()
                 .filter(s -> !s.getStatus().equals(Status.PASSED)).sorted((a, b) -> -1).findFirst();
         lastFailedStep.map(Step::getStatusDetails).ifPresent(result::setStatusDetails);
         visitor.visitTestResult(result);
     }
 
-    private void parseStep(final Path directory, final TestResult testResult, final Object parent,
+    private void parseStep(final Path directory, final Object parent,
                            final Object activity, final ResultsVisitor visitor) {
 
         final Map<String, Object> props = asMap(activity);
@@ -104,9 +105,10 @@ public class IosPlugin implements Reader {
 
         if (activityTitle.startsWith("Start Test at")) {
             getStartTime(activityTitle).ifPresent(start -> {
-                long duration = testResult.getTime().getDuration();
-                testResult.getTime().setStart(start);
-                testResult.getTime().setStop(start + duration);
+                WithTime withTime = (WithTime) parent;
+                long duration = withTime.getTime().getDuration();
+                withTime.getTime().setStart(start);
+                withTime.getTime().setStop(start + duration);
             });
             return;
         }
@@ -133,7 +135,7 @@ public class IosPlugin implements Reader {
         }
 
         asList(props.getOrDefault(SUB_ACTIVITIES, emptyList()))
-                .forEach(subActivity -> parseStep(directory, testResult, step, subActivity, visitor));
+                .forEach(subActivity -> parseStep(directory, step, subActivity, visitor));
 
         Optional<Step> lastFailedStep = step.getSteps().stream()
                 .filter(s -> !s.getStatus().equals(Status.PASSED)).sorted((a, b) -> -1).findFirst();
