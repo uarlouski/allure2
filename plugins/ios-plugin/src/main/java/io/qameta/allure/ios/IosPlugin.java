@@ -7,6 +7,9 @@ import io.qameta.allure.entity.Status;
 import io.qameta.allure.entity.StatusDetails;
 import io.qameta.allure.entity.Step;
 import io.qameta.allure.entity.TestResult;
+import io.qameta.allure.entity.WithStatus;
+import io.qameta.allure.entity.WithStatusDetails;
+import io.qameta.allure.entity.WithSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xmlwise.Plist;
@@ -90,20 +93,17 @@ public class IosPlugin implements Reader {
         final TestResult result = ResultsUtils.getTestResult(props);
         asList(props.getOrDefault(ACTIVITY_SUMMARIES, emptyList()))
                 .forEach(activity -> parseStep(directory, result, result, activity, visitor));
+        Optional<Step> lastFailedStep = result.getTestStage().getSteps().stream()
+                .filter(s -> !s.getStatus().equals(Status.PASSED)).sorted((a, b) -> -1).findFirst();
+        lastFailedStep.map(Step::getStatusDetails).ifPresent(result::setStatusDetails);
         visitor.visitTestResult(result);
     }
 
     private void parseStep(final Path directory, final TestResult testResult, final Object parent,
                            final Object activity, final ResultsVisitor visitor) {
+
         final Map<String, Object> props = asMap(activity);
         final String activityTitle = (String) props.get(TITLE);
-
-        if (activityTitle.startsWith("Assertion Failure:")) {
-            testResult.setStatusDetails(new StatusDetails().withMessage(activityTitle));
-            ((Step) parent).setStatus(Status.FAILED);
-            ((Step) parent).setStatusDetails(new StatusDetails().withMessage(activityTitle));
-            return;
-        }
 
         if (activityTitle.startsWith("Start Test at")) {
             getStartTime(activityTitle).ifPresent(start -> {
@@ -113,13 +113,18 @@ public class IosPlugin implements Reader {
             });
             return;
         }
-
         final Step step = ResultsUtils.getStep(props);
+        if (activityTitle.startsWith("Assertion Failure:")) {
+            step.setStatusDetails(new StatusDetails().withMessage(activityTitle));
+            step.setStatus(Status.FAILED);
+        }
 
         if (props.containsKey(HAS_SCREENSHOT)) {
             String uuid = props.get("UUID").toString();
             Path attachmentPath = directory.resolve("Attachments").resolve(String.format("Screenshot_%s.png", uuid));
-            step.getAttachments().add(visitor.visitAttachmentFile(attachmentPath));
+            if (Files.exists(attachmentPath)) {
+                step.getAttachments().add(visitor.visitAttachmentFile(attachmentPath));
+            }
         }
 
         if (parent instanceof TestResult) {
@@ -133,10 +138,10 @@ public class IosPlugin implements Reader {
         asList(props.getOrDefault(SUB_ACTIVITIES, emptyList()))
                 .forEach(subActivity -> parseStep(directory, testResult, step, subActivity, visitor));
 
-        step.getSteps().stream()
-                .map(Step::getStatus)
-                .filter(status -> status.equals(Status.FAILED))
-                .findFirst().ifPresent(step::setStatus);
+        Optional<Step> lastFailedStep = step.getSteps().stream()
+                .filter(s -> !s.getStatus().equals(Status.PASSED)).sorted((a, b) -> -1).findFirst();
+        lastFailedStep.map(Step::getStatus).ifPresent(step::setStatus);
+        lastFailedStep.map(Step::getStatusDetails).ifPresent(step::setStatusDetails);
     }
 
     @SuppressWarnings("unchecked")
