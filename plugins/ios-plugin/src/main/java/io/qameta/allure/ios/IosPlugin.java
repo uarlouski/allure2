@@ -3,6 +3,7 @@ package io.qameta.allure.ios;
 import io.qameta.allure.Reader;
 import io.qameta.allure.core.Configuration;
 import io.qameta.allure.core.ResultsVisitor;
+import io.qameta.allure.entity.Label;
 import io.qameta.allure.entity.Status;
 import io.qameta.allure.entity.StatusDetails;
 import io.qameta.allure.entity.Step;
@@ -26,7 +27,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
@@ -68,27 +68,30 @@ public class IosPlugin implements Reader {
 
     private void parseSummary(final Path directory, final Object summary, final ResultsVisitor visitor) {
         final Map<String, Object> props = asMap(summary);
+        final String name = ResultsUtils.getTestName(props);
         final List<Object> tests = asList(props.getOrDefault(TESTS, emptyList()));
-        tests.forEach(test -> parseTestSuite(directory, test, visitor));
+        tests.forEach(test -> parseTestSuite(name, test, directory, visitor));
     }
 
     @SuppressWarnings("unchecked")
-    private void parseTestSuite(final Path directory, final Object testSuite, final ResultsVisitor visitor) {
-        Map<String, Object> props = asMap(testSuite);
-        final Object tests = props.get(SUB_TESTS);
-        if (Objects.nonNull(tests)) {
-            final List<?> subTests = List.class.cast(tests);
-            subTests.forEach(subTest -> parseTestSuite(directory, subTest, visitor));
+    private void parseTestSuite(final String parentName, final Object testSuite,
+                                final Path directory, final ResultsVisitor visitor) {
+        final Map<String, Object> props = asMap(testSuite);
+        if (ResultsUtils.isTest(props)) {
+            parseTest(parentName, testSuite, directory, visitor);
+            return;
         }
 
-        if (ResultsUtils.isTest(props)) {
-            parseTest(directory, testSuite, visitor);
-        }
+        final List<?> subTests = asList(props.getOrDefault(SUB_TESTS, emptyList()));
+        subTests.forEach(subTest -> parseTestSuite(ResultsUtils.getTestName(props), subTest, directory, visitor));
     }
 
-    private void parseTest(final Path directory, final Object test, final ResultsVisitor visitor) {
-        Map<String, Object> props = asMap(test);
-        final TestResult result = ResultsUtils.getTestResult(props);
+    private void parseTest(final String suiteName, final Object test,
+                           final Path directory, final ResultsVisitor visitor) {
+        final Map<String, Object> props = asMap(test);
+        final TestResult result = ResultsUtils.getTestResult(props)
+                .withLabels(new Label().withName("suite").withValue(suiteName));
+
         asList(props.getOrDefault(ACTIVITY_SUMMARIES, emptyList()))
                 .forEach(activity -> parseStep(directory, result, activity, visitor));
         Optional<Step> lastFailedStep = result.getTestStage().getSteps().stream()
@@ -105,7 +108,7 @@ public class IosPlugin implements Reader {
 
         if (activityTitle.startsWith("Start Test at")) {
             getStartTime(activityTitle).ifPresent(start -> {
-                WithTime withTime = (WithTime) parent;
+                final WithTime withTime = (WithTime) parent;
                 long duration = withTime.getTime().getDuration();
                 withTime.getTime().setStart(start);
                 withTime.getTime().setStop(start + duration);

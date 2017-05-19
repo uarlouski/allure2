@@ -41,7 +41,7 @@ public final class ResultsUtils {
         return props.containsKey(TEST_STATUS);
     }
 
-    private static String getTestName(final Map<String, Object> props) {
+    public static String getTestName(final Map<String, Object> props) {
         return (String) props.getOrDefault(TEST_NAME, "Unknown");
     }
 
