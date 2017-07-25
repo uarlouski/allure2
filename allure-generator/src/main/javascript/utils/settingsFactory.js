@@ -19,7 +19,6 @@ const treePluginDefaults = {
         broken: true,
         skipped: true,
         pending: true,
-        unknown: true,
         passed: true,
         knownissuesonly: true,
         notcovered: true
