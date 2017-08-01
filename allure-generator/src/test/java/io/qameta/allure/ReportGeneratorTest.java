@@ -83,32 +83,8 @@ class ReportGeneratorTest {
     }
 
     @Test
-    void shouldGenerateWidgetCategoriesTrendJson() {
-        assertThat(output.resolve("widgets/categories-trend.json"))
-                .isRegularFile();
-    }
-
-    @Test
-    void shouldGenerateWidgetDurationJson() {
+    public void shouldGenerateWidgetDurationJson() throws Exception {
         assertThat(output.resolve("widgets/duration.json"))
-                .isRegularFile();
-    }
-
-    @Test
-    void shouldGenerateWidgetDurationTrendJson() {
-        assertThat(output.resolve("widgets/duration-trend.json"))
-                .isRegularFile();
-    }
-
-    @Test
-    void shouldGenerateWidgetRetryTrendJson() {
-        assertThat(output.resolve("widgets/retry-trend.json"))
-                .isRegularFile();
-    }
-
-    @Test
-    void shouldGenerateWidgetEnvironmentJson() {
-        assertThat(output.resolve("widgets/environment.json"))
                 .isRegularFile();
     }
 
@@ -149,13 +125,7 @@ class ReportGeneratorTest {
     }
 
     @Test
-    void shouldGenerateWidgetSummaryJson() {
-        assertThat(output.resolve("widgets/summary.json"))
-                .isRegularFile();
-    }
-
-    @Test
-    void shouldGenerateAttachments() throws Exception {
+    public void shouldGenerateAttachments() throws Exception {
         final Path attachmentsFolder = output.resolve("data/attachments");
         assertThat(attachmentsFolder)
                 .isDirectory();
