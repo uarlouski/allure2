@@ -47,7 +47,6 @@ import io.qameta.allure.retry.RetryTrendPlugin;
 import io.qameta.allure.severity.SeverityPlugin;
 import io.qameta.allure.status.StatusChartPlugin;
 import io.qameta.allure.suites.SuitesPlugin;
-import io.qameta.allure.summary.SummaryPlugin;
 import io.qameta.allure.tags.TagsPlugin;
 import io.qameta.allure.timeline.TimelinePlugin;
 
@@ -101,7 +100,6 @@ public class ConfigurationBuilder {
                 new MailPlugin(),
                 new InfluxDbExportPlugin(),
                 new PrometheusExportPlugin(),
-                new SummaryPlugin(),
                 new ExecutorPlugin(),
                 new LaunchPlugin(),
                 new Allure1Plugin(),
