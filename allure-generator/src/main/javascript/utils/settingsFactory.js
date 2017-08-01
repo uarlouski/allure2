@@ -3,7 +3,8 @@ import LocalStorageModel from '../data/localstorage/LocalStorageModel';
 const globalSettingsDefaults = {
     language: 'en',
     sidebarCollapsed: false,
-    sideBySidePosition: [50, 50]
+    sideBySidePosition: [50, 50],
+    totalResultSelectOption: 'scenariosWithoutExamplesStatistic'
 };
 
 const treePluginDefaults = {
@@ -59,6 +60,14 @@ function getGlobalSettings() {
 
         setSideBySidePosition(size) {
             return this.save('sideBySidePosition', size);
+        },
+
+        getTotalResultSelectOption() {
+            return this.get('totalResultSelectOption');
+        },
+
+        setTotalResultSelectOption(value) {
+            return this.save('totalResultSelectOption', value);
         }
     });
     const settings = new SettingsModel();
