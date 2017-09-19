@@ -12,7 +12,8 @@ const treePluginDefaults = {
         broken: true,
         skipped: true,
         unknown: true,
-        passed: true
+        passed: true,
+        knownissuesonly: true
     },
     visibleMarks: {
         flaky: false,

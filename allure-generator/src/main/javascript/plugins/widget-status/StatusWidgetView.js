@@ -30,6 +30,7 @@ class StatusWidgetView extends View {
             broken: 0,
             skipped: 0,
             passed: 0,
+            knownissuesonly: 0,
             unknown: 0
         });
         return new Model({statistic});
