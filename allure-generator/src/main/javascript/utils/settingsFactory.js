@@ -4,7 +4,11 @@ const globalSettingsDefaults = {
     language: 'en',
     sidebarCollapsed: false,
     sideBySidePosition: [50, 50],
-    totalResultSelectOption: 'scenariosWithoutExamplesStatistic'
+    totalResultSelectOption: 'scenariosWithoutExamplesStatistic',
+    stepDisplayParams: {
+        showStepStartTime: true,
+        showDebugLogs: false
+    }
 };
 
 const treePluginDefaults = {
@@ -68,6 +72,14 @@ function getGlobalSettings() {
 
         setTotalResultSelectOption(value) {
             return this.save('totalResultSelectOption', value);
+        },
+
+        getStepDisplayParams() {
+            return this.get('stepDisplayParams');
+        },
+
+        setStepDisplayParams(value) {
+            this.save('stepDisplayParams', value);
         }
     });
     const settings = new SettingsModel();

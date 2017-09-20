@@ -30,6 +30,7 @@ import io.qameta.allure.entity.Step;
 import io.qameta.allure.entity.Time;
 import io.qameta.allure.model.Allure2ModelJackson;
 import io.qameta.allure.model.FixtureResult;
+import io.qameta.allure.model.StatusDetails;
 import io.qameta.allure.model.StepResult;
 import io.qameta.allure.model.TestResult;
 import io.qameta.allure.model.TestResultContainer;
@@ -217,6 +218,10 @@ public class Allure2Plugin implements Reader {
                 .setParameters(convert(step.getParameters(), this::convert))
                 .setAttachments(convert(step.getAttachments(), attachment -> convert(source, visitor, attachment)))
                 .setSteps(convert(step.getSteps(), s -> convert(source, visitor, s)));
+        final StatusDetails stepStatusDetails = step.getStatusDetails();
+        if (stepStatusDetails != null) {
+            result.setMuted(stepStatusDetails.isMuted());
+        }
         Optional.of(step)
                 .map(StepResult::getStatusDetails)
                 .ifPresent(statusDetails -> {
