@@ -29,6 +29,7 @@ import java.util.Objects;
  */
 @Data
 @Accessors(chain = true)
+
 public class Statistic implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -39,12 +40,13 @@ public class Statistic implements Serializable {
     protected long knownissuesonly;
     protected long pending;
     protected long passed;
+    protected long notcovered;
     protected long unknown;
 
     @JsonProperty
     public long getTotal() {
         return getFailed() + getBroken() + getPassed() + getKnownissuesonly() + getSkipped() + getPending()
-               + getUnknown();
+                + getNotcovered() + getUnknown();
     }
 
     /**
@@ -58,6 +60,7 @@ public class Statistic implements Serializable {
         //do nothing
     }
 
+    @SuppressWarnings("ReturnCount")
     public long get(final Status status) {
         switch (status) {
             case FAILED:
@@ -72,6 +75,8 @@ public class Statistic implements Serializable {
                 return getSkipped();
             case PENDING:
                 return getPending();
+            case NOT_COVERED:
+                return getNotcovered();
             default:
                 return getUnknown();
         }
@@ -117,6 +122,9 @@ public class Statistic implements Serializable {
             case PENDING:
                 setPending(getPending() + 1);
                 break;
+            case NOT_COVERED:
+                setNotcovered(getNotcovered() + 1);
+                break;
             default:
                 setUnknown(getUnknown() + 1);
                 break;
@@ -133,6 +141,7 @@ public class Statistic implements Serializable {
         setKnownissuesonly(getKnownissuesonly() + other.getKnownissuesonly());
         setSkipped(getSkipped() + other.getSkipped());
         setPending(getPending() + other.getPending());
+        setNotcovered(getNotcovered() + other.getNotcovered());
         setUnknown(getUnknown() + other.getUnknown());
     }
 
@@ -143,6 +152,7 @@ public class Statistic implements Serializable {
                 .thenComparing(Statistic::getKnownissuesonly)
                 .thenComparing(Statistic::getSkipped)
                 .thenComparing(Statistic::getPending)
+                .thenComparing(Statistic::getNotcovered)
                 .thenComparing(Statistic::getUnknown);
     }
 }
