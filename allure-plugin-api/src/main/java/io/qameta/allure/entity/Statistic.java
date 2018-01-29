@@ -14,6 +14,7 @@ import java.util.Objects;
  */
 @Data
 @Accessors(chain = true)
+
 public class Statistic implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -21,12 +22,16 @@ public class Statistic implements Serializable {
     protected long failed;
     protected long broken;
     protected long skipped;
+    protected long knownissuesonly;
+    protected long pending;
     protected long passed;
+    protected long notcovered;
     protected long unknown;
 
     @JsonProperty
     public long getTotal() {
-        return getFailed() + getBroken() + getPassed() + getSkipped() + getUnknown();
+        return getFailed() + getBroken() + getPassed() + getKnownissuesonly() + getSkipped() + getPending()
+                + getNotcovered() + getUnknown();
     }
 
     /**
@@ -48,8 +53,14 @@ public class Statistic implements Serializable {
                 return getBroken();
             case PASSED:
                 return getPassed();
+            case KNOWN_ISSUES_ONLY:
+                return getKnownissuesonly();
             case SKIPPED:
                 return getSkipped();
+            case PENDING:
+                return getPending();
+            case NOT_COVERED:
+                return getNotcovered();
             default:
                 return getUnknown();
         }
@@ -86,8 +97,17 @@ public class Statistic implements Serializable {
             case PASSED:
                 setPassed(getPassed() + 1);
                 break;
+            case KNOWN_ISSUES_ONLY:
+                setKnownissuesonly(getKnownissuesonly() + 1);
+                break;
             case SKIPPED:
                 setSkipped(getSkipped() + 1);
+                break;
+            case PENDING:
+                setPending(getPending() + 1);
+                break;
+            case NOT_COVERED:
+                setNotcovered(getNotcovered() + 1);
                 break;
             default:
                 setUnknown(getUnknown() + 1);
@@ -102,7 +122,10 @@ public class Statistic implements Serializable {
         setFailed(getFailed() + other.getFailed());
         setBroken(getBroken() + other.getBroken());
         setPassed(getPassed() + other.getPassed());
+        setKnownissuesonly(getKnownissuesonly() + other.getKnownissuesonly());
         setSkipped(getSkipped() + other.getSkipped());
+        setPending(getPending() + other.getPending());
+        setNotcovered(getNotcovered() + other.getNotcovered());
         setUnknown(getUnknown() + other.getUnknown());
     }
 
@@ -110,7 +133,10 @@ public class Statistic implements Serializable {
         return Comparator.comparing(Statistic::getFailed)
                 .thenComparing(Statistic::getBroken)
                 .thenComparing(Statistic::getPassed)
+                .thenComparing(Statistic::getKnownissuesonly)
                 .thenComparing(Statistic::getSkipped)
+                .thenComparing(Statistic::getPending)
+                .thenComparing(Statistic::getNotcovered)
                 .thenComparing(Statistic::getUnknown);
     }
 }

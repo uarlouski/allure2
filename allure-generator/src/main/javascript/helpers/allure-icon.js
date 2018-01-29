@@ -18,13 +18,21 @@ const icons = {
         className: 'fa fa-check-circle fa-fw text_status_passed',
         tooltip: 'status.passed'
     },
+    knownissuesonly: {
+        className: 'fa fa-check-circle fa-fw text_status_knownissuesonly',
+        tooltip: 'status.knownissuesonly'
+    },
     skipped: {
         className: 'fa fa-minus-circle fa-fw text_status_skipped',
         tooltip: 'status.skipped'
     },
-    unknown: {
-        className: 'fa fa-question-circle fa-fw text_status_unknown',
-        tooltip: 'status.unknown'
+    pending: {
+        className: 'fa fa-question-circle fa-fw text_status_pending',
+        tooltip: 'status.pending'
+    },
+    notcovered: {
+        className: 'fa fa-question-circle fa-fw text_status_notcovered',
+        tooltip: 'status.notcovered'
     }
 };
 

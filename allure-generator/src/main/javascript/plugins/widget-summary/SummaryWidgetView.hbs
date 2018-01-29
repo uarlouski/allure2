@@ -1,19 +1,26 @@
 <div class="{{b 'widget' 'flex-line'}}">
     <div class="{{b 'widget' 'column'}}">
         <h2 class="{{b 'widget' 'title'}}">
-            {{#if isAggregated}}
-                {{t 'widget.summary.aggregatedName'}}
-                <span class="{{b 'widget' 'subtitle'}}">{{launchesCount}} {{t 'widget.summary.launches' count=launchesCount}}</span>
-            {{else}}
-                {{reportName}} {{date time.stop}}
-            {{/if}}
-            <div class="{{b 'widget' 'subtitle'}}">
-                {{time time.start}} - {{time time.stop}} ({{duration time.duration 2}})
+            <div class="summary_title_row">
+                {{#if isAggregated}}
+                    {{t 'widget.summary.aggregatedName'}}
+                    <span class="{{b 'widget' 'subtitle'}}">{{launchesCount}} {{t 'widget.summary.launches' count=launchesCount}}</span>
+                {{else}}
+                    {{reportName}} {{date time.stop}}
+                {{/if}}
+                <div class="{{b 'widget' 'subtitle'}}">
+                    {{time time.start}} - {{time time.stop}} ({{duration time.duration 2}})
+                </div>
             </div>
+            <div class="{{b 'coverage' 'toggle'}} summary_title_row"></div>
         </h2>
         <div class="{{b 'summary-widget' 'stats'}} splash">
             <div class="{{b 'splash' 'title'}}">{{statistic.total}}</div>
-            <div class="{{b 'splash' 'subtitle'}}">{{t 'widget.summary.testResults' count=statistic.total}}</div>
+            <div class="{{b 'widget' 'item'}}" data-tooltip="Change option">
+                <button class="{{b 'button'}} {{b 'button' inverse=true}} {{b 'widget' 'option-small'}}">
+                    {{t currentOption.translation}}
+                </button>
+            </div>
         </div>
     </div>
     <div class="{{b 'widget' 'column'}} {{b 'summary-widget' 'chart'}}"></div>

@@ -2,7 +2,14 @@ import LocalStorageModel from '../data/localstorage/LocalStorageModel';
 
 const globalSettingsDefaults = {
     language: 'en',
-    sidebarCollapsed: false
+    sidebarCollapsed: false,
+    totalResultSelectOption: 'scenariosWithoutExamplesStatistic',
+    stepDisplayParams: {
+        showStepStartTime: true,
+        showDebugLogs: false
+    },
+    performanceShowPercentage: false,
+    coverageChecked: false
 };
 
 const treePluginDefaults = {
@@ -10,8 +17,10 @@ const treePluginDefaults = {
         failed: true,
         broken: true,
         skipped: true,
-        unknown: true,
-        passed: true
+        pending: true,
+        passed: true,
+        knownissuesonly: true,
+        notcovered: true
     },
     showGroupInfo: false,
     treeSorting: {
@@ -44,6 +53,38 @@ function getGlobalSettings() {
 
         setSidebarCollapsed(value) {
             return this.save('sidebarCollapsed', value);
+        },
+
+        getTotalResultSelectOption() {
+            return this.get('totalResultSelectOption');
+        },
+
+        setTotalResultSelectOption(value) {
+            return this.save('totalResultSelectOption', value);
+        },
+
+        getStepDisplayParams() {
+            return this.get('stepDisplayParams');
+        },
+
+        setStepDisplayParams(value) {
+            this.save('stepDisplayParams', value);
+        },
+
+        isPerformanceShowPercentage() {
+            return this.get('performanceShowPercentage');
+        },
+
+        setPerformanceShowPercentage(value) {
+            return this.save('performanceShowPercentage', value);
+        },
+
+        isCoverageChecked() {
+            return this.get('coverageChecked');
+        },
+
+        setCoverageChecked(value) {
+            return this.save('coverageChecked', value);
         }
     });
     const settings = new SettingsModel();

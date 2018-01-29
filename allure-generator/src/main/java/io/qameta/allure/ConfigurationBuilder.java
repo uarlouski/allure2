@@ -13,19 +13,15 @@ import io.qameta.allure.core.MarkdownDescriptionsPlugin;
 import io.qameta.allure.core.Plugin;
 import io.qameta.allure.core.ReportWebPlugin;
 import io.qameta.allure.core.TestsResultsPlugin;
-import io.qameta.allure.environment.Allure1EnvironmentPlugin;
 import io.qameta.allure.executor.ExecutorPlugin;
-import io.qameta.allure.ga.GaPlugin;
 import io.qameta.allure.graph.GraphPlugin;
 import io.qameta.allure.history.HistoryPlugin;
-import io.qameta.allure.history.HistoryTrendPlugin;
 import io.qameta.allure.launch.LaunchPlugin;
 import io.qameta.allure.mail.MailPlugin;
 import io.qameta.allure.owner.OwnerPlugin;
 import io.qameta.allure.retry.RetryPlugin;
 import io.qameta.allure.severity.SeverityPlugin;
 import io.qameta.allure.suites.SuitesPlugin;
-import io.qameta.allure.summary.SummaryPlugin;
 import io.qameta.allure.tags.TagsPlugin;
 import io.qameta.allure.timeline.TimelinePlugin;
 import io.qameta.allure.widget.WidgetsPlugin;
@@ -61,7 +57,6 @@ public class ConfigurationBuilder {
                 new OwnerPlugin(),
                 new CategoriesPlugin(),
                 new HistoryPlugin(),
-                new HistoryTrendPlugin(),
                 new GraphPlugin(),
                 new TimelinePlugin(),
                 new SuitesPlugin(),
@@ -70,13 +65,10 @@ public class ConfigurationBuilder {
                 new AttachmentsPlugin(),
                 new MailPlugin(),
                 new WidgetsPlugin(),
-                new SummaryPlugin(),
                 new ExecutorPlugin(),
                 new LaunchPlugin(),
                 new Allure1Plugin(),
-                new Allure1EnvironmentPlugin(),
-                new Allure2Plugin(),
-                new GaPlugin()
+                new Allure2Plugin()
         ));
         return this;
     }

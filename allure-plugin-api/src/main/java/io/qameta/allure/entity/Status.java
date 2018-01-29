@@ -12,7 +12,10 @@ public enum Status implements Serializable {
     FAILED("failed"),
     BROKEN("broken"),
     PASSED("passed"),
+    KNOWN_ISSUES_ONLY("knownissuesonly"),
     SKIPPED("skipped"),
+    PENDING("pending"),
+    NOT_COVERED("notcovered"),
     UNKNOWN("unknown");
 
     private static final long serialVersionUID = 1L;

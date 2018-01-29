@@ -10,8 +10,17 @@
   &_status_passed {
     background: $background-passed;
   }
+  &_status_knownissuesonly {
+    background: $background-knownissuesonly;
+  }
   &_status_skipped {
     background: $background-skipped;
+  }
+  &_status_pending {
+    background: $background-pending;
+  }
+  &_status_notcovered {
+    background: $background-notcovered;
   }
   &_status_unknown {
     background: $background-unknown;
@@ -28,8 +37,17 @@
   &_status_passed::before {
     background: $color-passed;
   }
+  &_status_knownissuesonly::before {
+    background: $color-knownissuesonly;
+  }
   &_status_skipped::before {
     background: $color-skipped;
+  }
+  &_status_pending::before {
+    background: $color-pending;
+  }
+  &_status_notcovered::before {
+    background: $color-notcovered;
   }
   &_status_unknown::before {
     background: $color-unknown;
@@ -46,8 +64,17 @@
   &_status_passed {
     background: $background-light-passed;
   }
+  &_status_knownissuesonly {
+    background: $background-light-knownissuesonly;
+  }
   &_status_skipped {
     background: $background-light-skipped;
+  }
+  &_status_pending {
+    background: $background-light-pending;
+  }
+  &_status_notcovered {
+    background: $background-light-notcovered;
   }
   &_status_unknown {
     background: $background-light-unknown;
@@ -64,8 +91,17 @@
   &_status_passed {
     background: $color-passed;
   }
+  &_status_knownissuesonly {
+    background: $color-knownissuesonly;
+  }
   &_status_skipped {
     background: $color-skipped;
+  }
+  &_status_pending {
+    background: $color-pending;
+  }
+  &_status_notcovered {
+    background: $color-notcovered;
   }
   &_status_unknown {
     background: $color-unknown;
@@ -82,8 +118,17 @@
   &_status_passed {
     border-color: $color-passed;
   }
+  &_status_knownissuesonly {
+    border-color: $color-knownissuesonly;
+  }
   &_status_skipped {
     border-color: $color-skipped;
+  }
+  &_status_pending {
+    border-color: $color-pending;
+  }
+  &_status_notcovered {
+    border-color: $color-notcovered;
   }
   &_status_unknown {
     border-color: $color-unknown;
@@ -100,8 +145,17 @@
   &_status_passed {
     color: $color-passed;
   }
+  &_status_knownissuesonly {
+    color: $color-knownissuesonly;
+  }
   &_status_skipped {
     color: $color-skipped;
+  }
+  &_status_pending {
+    color: $color-pending;
+  }
+  &_status_notcovered {
+    color: $color-notcovered;
   }
   &_status_unknown {
     color: $color-unknown;
@@ -118,8 +172,20 @@
   &_status_passed {
     fill: $color-passed;
   }
+  &_status_knownissuesonly {
+    fill: $color-knownissuesonly;
+  }
   &_status_skipped {
     fill: $color-skipped;
+  }
+  &_status_pending {
+    fill: $color-pending;
+  }
+  &_status_notcovered {
+    fill: $color-notcovered;
+  }
+  &_status_covered {
+    fill: $color-covered;
   }
   &_status_unknown {
     fill: $color-unknown;

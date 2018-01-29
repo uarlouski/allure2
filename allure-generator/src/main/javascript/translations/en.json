@@ -3,7 +3,11 @@
     "failed": "Failed",
     "broken": "Broken",
     "passed": "Passed",
+    "knownissuesonly": "Known",
     "skipped": "Skipped",
+    "pending": "Pending",
+    "notcovered": "Not covered",
+    "covered": "Сovered",
     "unknown": "Unknown",
     "flaky": "Test is flaky"
   },
@@ -18,10 +22,10 @@
       "name": "Overview"
     },
     "categories": {
-      "name": "Categories"
+      "name": "Defects"
     },
     "suites": {
-      "name": "Suites"
+      "name": "Stories"
     },
     "graph": {
       "name": "Graphs"
@@ -38,7 +42,10 @@
       "launches": "launch",
       "launches_plural": "launches",
       "testResults": "test case",
-      "testResults_plural": "test cases"
+      "testResults_plural": "test cases",
+      "scenariosWithoutExamples": "Scenarios (w/o examples)",
+      "scenarios": "Scenarios",
+      "stories": "Stories"
     },
     "trend": {
       "name": "Trend"
@@ -121,6 +128,10 @@
       "setup": "Set up",
       "teardown": "Tear down",
       "body": "Test body"
+    },
+    "display": {
+      "showStepStartTime": "Show step start time",
+      "showDebugLogs": "Show debug logs"
     },
     "stats": {
       "count": {
