@@ -157,6 +157,8 @@ configure(subprojects) {
         (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
     }
 
+    tasks.withType(Javadoc::class).all { enabled = false }
+
     artifacts.add("archives", sourceJar)
     artifacts.add("archives", javadocJar)
 
