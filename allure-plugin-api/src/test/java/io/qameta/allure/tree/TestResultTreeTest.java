@@ -18,8 +18,12 @@ package io.qameta.allure.tree;
 import io.qameta.allure.entity.Label;
 import io.qameta.allure.entity.TestResult;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Collections;
+import java.util.stream.Stream;
 
 import static io.qameta.allure.entity.LabelName.FEATURE;
 import static io.qameta.allure.entity.LabelName.STORY;
@@ -43,11 +47,20 @@ class TestResultTreeTest {
                 .hasSize(0);
     }
 
-    @Test
-    void shouldCrossGroup() {
+    static Stream<Arguments> testResults()
+    {
+        return Stream.of(
+                Arguments.of((TreeClassifier<TestResult>) testResult -> groupByLabels(testResult, FEATURE, STORY)),
+                Arguments.of((TreeClassifier<TestResult>) testResult -> groupByLabels(testResult, Stream.of(FEATURE.value(), STORY.value())))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testResults")
+    void shouldCrossGroup(final TreeClassifier<TestResult> treeClassifier) {
         final Tree<TestResult> behaviors = new TestResultTree(
                 "behaviors",
-                testResult -> groupByLabels(testResult, FEATURE, STORY)
+                treeClassifier
         );
 
         final TestResult first = new TestResult()
