@@ -47,7 +47,12 @@ public final class TreeUtils {
 
     public static List<TreeLayer> groupByLabels(final TestResult testResult,
                                                 final LabelName... labelNames) {
-        return Stream.of(labelNames)
+        return groupByLabels(testResult, Stream.of(labelNames).map(LabelName::value));
+    }
+
+    public static List<TreeLayer> groupByLabels(final TestResult testResult,
+                                                final Stream<String> labelNames) {
+        return labelNames
                 .map(testResult::findAllLabels)
                 .filter(strings -> !strings.isEmpty())
                 .map(DefaultTreeLayer::new)
