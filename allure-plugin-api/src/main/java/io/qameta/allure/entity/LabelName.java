@@ -45,6 +45,7 @@ public enum LabelName implements Serializable {
     RESULT_FORMAT("resultFormat"),
     TEST_CASE_GROUP("testCaseGroup"),
     TEST_CASE_ID("testCaseId"),
+    CLONE_CASE_ID("cloneCaseId"),
     REQUIREMENT_ID("requirementId");
 
     private static final long serialVersionUID = 1L;

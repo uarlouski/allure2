@@ -45,7 +45,8 @@ import './plugins/testresult-duration';
 import './plugins/testresult-parameters';
 import './plugins/testresult-links';
 import './plugins/testresult-groups';
-import './plugins/testresult-ids';
+import './plugins/testresult-test-ids';
+import './plugins/testresult-clone-ids';
 import './plugins/testresult-requirements';
 
 window.jQuery = $;
